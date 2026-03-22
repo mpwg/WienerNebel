@@ -1,5 +1,3 @@
-Hier ist eine detaillierte Markdown-Spezifikation, die du direkt als Grundlage für Codex verwenden kannst.
-
 # Scotland Yard Wien – Hidden Mr. X
 ## Produkt- und Umsetzungsspezifikation für Codex
 
@@ -1238,5 +1236,3 @@ Das MVP ist fertig, wenn:
 	10.	grundlegende Tests grün sind
 
 Ein paar Punkte daraus stützen sich auf den aktuellen Stand der Cloudflare-Plattform: Workers Free hat derzeit 100.000 Requests pro Tag, Durable Objects sind auf dem Free-Plan verfügbar, dort aber nur SQLite-basiert; D1 hat auf Free aktuell bis zu 10 Datenbanken pro Account und 500 MB pro Datenbank. Für WebSocket-lastige Match-Logik sind Durable Objects ausdrücklich für koordinierte Anwendungen wie Multiplayer-Spiele gedacht, und Cloudflare empfiehlt bei WebSocket-Servern die Hibernation-Variante für bessere Kosteneffizienz.  [oai_citation:4‡Cloudflare Docs](https://developers.cloudflare.com/workers/platform/limits/?utm_source=chatgpt.com)
-
-Wenn du willst, mache ich dir daraus als Nächstes noch eine **zweite Datei `TASKS.md` mit konkreten Codex-Arbeitspaketen und Prompts pro Phase**.
