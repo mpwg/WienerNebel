@@ -1,6 +1,9 @@
 import { z } from "zod";
-
-const ticketTypeSchema = z.enum(["walk", "subway", "tram", "bus", "black"]);
+import {
+  playerMatchViewSchema,
+  publicMatchViewSchema,
+  ticketTypeSchema
+} from "./common";
 
 export const moveChoiceSchema = z.object({
   fromNodeId: z.string().min(1),
@@ -27,8 +30,28 @@ export const voteSchema = z.object({
   suspectPlayerId: z.string().min(1)
 });
 
+export const getMatchStateParamsSchema = z.object({
+  matchId: z.string().min(1)
+});
+
+export const getPlayerMatchStateQuerySchema = z.object({
+  playerId: z.string().min(1)
+});
+
+export const publicMatchStateResponseSchema = z.object({
+  match: publicMatchViewSchema
+});
+
+export const playerMatchStateResponseSchema = z.object({
+  match: playerMatchViewSchema
+});
+
 export type MoveChoice = z.infer<typeof moveChoiceSchema>;
 export type SubmitMoveRequest = z.infer<typeof submitMoveSchema>;
 export type ReadyRequest = z.infer<typeof readySchema>;
 export type MeetingRequest = z.infer<typeof meetingSchema>;
 export type VoteRequest = z.infer<typeof voteSchema>;
+export type GetMatchStateParams = z.infer<typeof getMatchStateParamsSchema>;
+export type GetPlayerMatchStateQuery = z.infer<typeof getPlayerMatchStateQuerySchema>;
+export type PublicMatchStateResponse = z.infer<typeof publicMatchStateResponseSchema>;
+export type PlayerMatchStateResponse = z.infer<typeof playerMatchStateResponseSchema>;
