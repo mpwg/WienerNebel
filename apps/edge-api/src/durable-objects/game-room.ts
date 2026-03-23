@@ -7,6 +7,7 @@ import {
 
 interface LobbyCreatePayload {
   matchId: string;
+  joinCode: string;
   hostId: string;
   hostName: string;
   mapId: string;
@@ -40,6 +41,7 @@ export class GameRoom {
           id: body.hostId,
           name: body.hostName
         },
+        joinCode: body.joinCode,
         mapId: map.id,
         matchId: body.matchId,
         maxRounds: body.maxRounds

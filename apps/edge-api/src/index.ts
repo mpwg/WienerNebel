@@ -10,6 +10,10 @@ export interface Env {
 
 export { GameRoom };
 
+function createJoinCode(): string {
+  return crypto.randomUUID().replace(/-/g, "").slice(0, 6).toUpperCase();
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
@@ -34,6 +38,7 @@ export default {
           },
           body: JSON.stringify({
             matchId,
+            joinCode: createJoinCode(),
             hostId: body.hostId,
             hostName: body.hostName,
             mapId: body.mapId,
