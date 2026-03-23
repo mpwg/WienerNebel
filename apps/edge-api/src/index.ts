@@ -39,6 +39,14 @@ function createJoinCode(): string {
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
+    if (request.method === "OPTIONS") {
+      return withCors(
+        new Response(null, {
+          status: 204
+        })
+      );
+    }
+
     const url = new URL(request.url);
 
     if (request.method === "GET" && url.pathname === "/health") {
@@ -269,10 +277,21 @@ export default {
 };
 
 function json(payload: unknown, status = 200): Response {
-  return new Response(JSON.stringify(payload, null, 2), {
-    status,
-    headers: {
-      "content-type": "application/json; charset=utf-8"
-    }
-  });
+  return withCors(
+    new Response(JSON.stringify(payload, null, 2), {
+      status,
+      headers: {
+        "content-type": "application/json; charset=utf-8"
+      }
+    })
+  );
+}
+
+function withCors(response: Response): Response {
+  response.headers.set("access-control-allow-origin", "*");
+  response.headers.set("access-control-allow-methods", "GET,POST,OPTIONS");
+  response.headers.set("access-control-allow-headers", "content-type");
+  response.headers.set("access-control-max-age", "86400");
+
+  return response;
 }
