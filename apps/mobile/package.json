@@ -1,0 +1,22 @@
+{
+  "name": "@wiener-nebel/mobile",
+  "private": true,
+  "version": "0.1.0",
+  "main": "expo/AppEntry",
+  "scripts": {
+    "android": "expo start --android",
+    "check": "tsc --noEmit -p tsconfig.json",
+    "ios": "expo start --ios",
+    "start": "expo start"
+  },
+  "dependencies": {
+    "@wiener-nebel/ui-tokens": "workspace:*",
+    "expo": "~51.0.0",
+    "react": "18.2.0",
+    "react-native": "0.74.5"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.66",
+    "typescript": "^5.6.3"
+  }
+}

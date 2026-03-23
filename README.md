@@ -1,88 +1,88 @@
 # Wiener Nebel
 
-Wiener Nebel ist ein mobiles Multiplayer-Spiel mit Hidden-Role- und Deduction-Mechaniken auf Basis eines abstrahierten Wiener Öffi-Netzes.
+Wiener Nebel ist ein Multiplayer-Spiel mit Hidden-Role-, Verfolgungs- und Social-Deduction-Mechaniken auf Basis eines abstrahierten Wiener Öffi-Netzes.
 
-## 🧠 Kernidee
-- 3–6 Spieler
-- 1 geheimer Mr. X (Impostor)
+## Produktidee
+
+- 3 bis 6 Spieler
+- 1 geheimer Mr. X
 - rundenbasiertes Gameplay
-- Wien-Karte mit Öffis (U-Bahn, Tram, Bus)
-- Social Deduction + Verfolgung
+- Wien-Karte mit Öffis und Fußwegen
+- Diskussion, Täuschung und Verfolgung
 
-👉 Einer lügt. Alle suchen.
+Einer lügt. Alle suchen.
 
----
+## Architekturziele
 
-## 🎮 Gameplay
-Alle Spieler bewegen sich auf einer abstrahierten Wien-Karte.
+- gut wartbare Domänenlogik mit klaren Grenzen
+- einfach hostbare Web/PWA für schnelle Playtests
+- mobile App für iOS und Android ohne separate Spiellogik
+- autoritativer Match-State auf dem Server
+- graphisch ansprechende Clients mit gemeinsamen Design-Tokens
 
-- Jeder wählt pro Runde einen Zug
-- Bewegungen werden teilweise verschleiert
-- Spieler diskutieren und verdächtigen sich gegenseitig
-- Abstimmungen (Meetings) können ausgelöst werden
+## Zielarchitektur
 
-Ziel:
-- **Ermittler**: Mr. X enttarnen und fangen  
-- **Mr. X**: unentdeckt bleiben und überleben
+### Clients
 
----
-
-## 🏗️ Tech Stack
-
-### Mobile
-- React Native + TypeScript
+- `apps/web` – React-Webclient als PWA für Browser, Couch-Mode und leichtes Hosting
+- `apps/mobile` – Expo-App für iOS und Android
 
 ### Backend
-- Cloudflare Workers
-- Durable Objects (Game State pro Match)
-- D1 (Persistenz)
 
-### Shared Code
-- TypeScript Packages (Typen, Regeln, Schemas)
+- `apps/edge-api` – Cloudflare Worker als API-Einstiegspunkt
+- Durable Objects – autoritativer Match-State pro Lobby oder Match
+- D1 – Metadaten, Snapshots, Replays und Lobby-Index
 
----
+### Gemeinsame Pakete
 
-## 📦 Monorepo Struktur
+- `packages/domain` – reine Spiellogik und View-Projektionen
+- `packages/contracts` – API-Schemas und DTOs
+- `packages/map-data` – versionierte Kartendaten
+- `packages/ui-tokens` – Farben, Typografie, Spacing und Motion
+- `packages/map-tools` – Generatoren und Prüfwerkzeuge für Karten
 
-- `apps/mobile` – Mobile App (iOS & Android)
-- `apps/worker` – Backend (Cloudflare)
-- `packages/shared` – Typen, Game Rules, Schemas
-- `packages/map-tools` – Karten- und Graph-Generierung
-- `docs/` – Konzept, Architektur, Tasks
+## Monorepo-Struktur
 
----
+```text
+apps/
+  mobile/
+  web/
+  edge-api/
+packages/
+  domain/
+  contracts/
+  map-data/
+  ui-tokens/
+  map-tools/
+docs/
+  concept.md
+  architecture.md
+  tasks.md
+```
 
-## 🎯 MVP Ziel
+## Entwicklungsfokus
 
-Ein spielbares Grundsystem mit:
+Der MVP soll zuerst auf schnelles Testen und einfache Auslieferung optimiert werden:
 
-- Gast-Login
-- Lobby mit Join-Code
-- Match-Start
-- zufällige Hidden-Rolle (Mr. X)
-- Zugauswahl (Öffis + Fuß)
-- Rundenauflösung
-- Public Logs (verschleierte Infos)
-- Voting / Meetings
-- Siegbedingungen
+- Web/PWA zuerst für sofortige interne Tests
+- Expo-App als mobiler Client auf derselben API und Domäne
+- Cloudflare als einfacher Hosting-Pfad für PWA und Backend
 
----
+## Schnellstart
 
-## 🚀 Vision
+```bash
+pnpm install
+pnpm dev:web
+pnpm dev:edge
+pnpm dev:mobile
+```
 
-Wiener Nebel verbindet:
-- klassische Brettspiel-Mechaniken
-- moderne Mobile-Games
-- Social Deduction
-- reale Stadtstrukturen
+## Weiterführende Dokumente
 
-Langfristig:
-- GPS City Mode (real durch Wien spielen)
-- mehrere Städte
-- Hybrid Brettspiel + App
+- [Konzept](docs/concept.md)
+- [Architektur](docs/architecture.md)
+- [Tasks](docs/tasks.md)
 
----
+## Status
 
-## 📍 Status
-
-🚧 Projekt im Aufbau (MVP Phase)
+Projekt im Aufbau. Das Repository enthält jetzt das Monorepo-Grundgerüst für Web/PWA, Mobile, Edge-API und gemeinsame Pakete.
