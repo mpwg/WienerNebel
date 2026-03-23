@@ -13,7 +13,7 @@
     "@wiener-nebel/ui-tokens": "workspace:*",
     "expo": "~55.0.8",
     "react": "19.2.4",
-    "react-native": "0.74.5"
+    "react-native": "0.84.1"
   },
   "devDependencies": {
     "@types/react": "^19.2.14",
