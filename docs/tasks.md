@@ -26,7 +26,8 @@ Stand: 23.03.2026
 - `packages/domain` deckt jetzt Lobby, Match-Start, Move-Planung, Ready/Resolution sowie einfache Meeting- und Voting-Übergänge ab, benötigt aber noch tiefere Spielregeln und Legality Checks.
 - `packages/contracts` enthält jetzt Request-/Response-Schemas für Lobby-Erstellung, Lobby-Join, Match-State sowie die ersten Match-Aktionen.
 - Die `edge-api` validiert und bedient jetzt die ersten Lobby- und Match-Aktionsflüsse über `packages/contracts`, es fehlen aber noch robustere Regeln, Fehlerfälle und Persistenz jenseits des MVP-Grundpfads.
-- Die Clients sind bisher nur als technisches Grundgerüst vorhanden, noch nicht als Spieloberflächen.
+- `apps/web` bietet jetzt einen ersten lokalen Browser-Testpfad für Lobby, Join, Match-State und Match-Aktionen gegen die lokale Edge-API.
+- Die Clients sind weiterhin noch kein vollständiger Spiel-UX-Flow, aber die Web-App ist jetzt als technische Testoberfläche nutzbar.
 
 ## Phase 1 – Monorepo und Basis
 
@@ -101,10 +102,10 @@ Stand: 23.03.2026
 
 ### Web/PWA
 
-- [ ] App-Shell und Installierbarkeit
-- [ ] Home Screen
-- [ ] Lobby Screen
-- [ ] Match Screen
+- [x] App-Shell und Installierbarkeit
+- [x] Home Screen
+- [x] Lobby Screen
+- [x] Match Screen
 - [ ] Voting Screen
 - [ ] Offline-freundliche Assets und Reconnect-Verhalten
 
