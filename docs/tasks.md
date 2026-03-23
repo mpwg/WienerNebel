@@ -24,7 +24,8 @@ Stand: 23.03.2026
 
 - Die meisten fachlichen Arbeitspakete ab Phase 2 sind noch nicht umgesetzt.
 - `packages/domain` hat jetzt ein erstes Match-State-Modell, View-Projektionen und eine Rule-Engine-Grundstruktur, benötigt aber noch echte Spielregeln und Rundenauflösung.
-- `packages/contracts` und die eigentliche `edge-api`-Funktionalität sind noch weitgehend offen.
+- `packages/contracts` enthält jetzt erste Request-/Response-Schemas für Lobby-Erstellung, Lobby-Join und Match-State, muss aber für Start, Moves, Meetings und Voting weiter ausgebaut werden.
+- Die `edge-api` validiert erste Lobby- und Match-State-Flows bereits über `packages/contracts`, die eigentliche Spiellogik-Endpunktfläche ist aber noch weitgehend offen.
 - Die Clients sind bisher nur als technisches Grundgerüst vorhanden, noch nicht als Spieloberflächen.
 
 ## Phase 1 – Monorepo und Basis
@@ -44,9 +45,9 @@ Stand: 23.03.2026
 
 ### Contracts
 
-- [ ] Zod-Schemas für Requests und Responses definieren
+- [x] Zod-Schemas für Requests und Responses definieren
 - [ ] DTOs für Lobby, Match und Voting strukturieren
-- [ ] Validierung an den API-Grenzen festlegen
+- [x] Validierung an den API-Grenzen festlegen
 
 ### Map Data
 
@@ -68,9 +69,9 @@ Stand: 23.03.2026
 
 ### Worker
 
-- [ ] Routing für HTTP-API anlegen
-- [ ] Health-Endpoint und API-Versionierung vorsehen
-- [ ] Requests über `packages/contracts` validieren
+- [x] Routing für HTTP-API anlegen
+- [x] Health-Endpoint und API-Versionierung vorsehen
+- [x] Requests über `packages/contracts` validieren
 
 ### Durable Object
 
