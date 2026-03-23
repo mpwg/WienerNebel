@@ -10,6 +10,9 @@
     "check:turbo": "turbo run check",
     "dev:edge": "corepack pnpm --filter @wiener-nebel/edge-api dev",
     "dev:mobile": "corepack pnpm --filter @wiener-nebel/mobile start",
+    "dev:test": "corepack pnpm --parallel --stream --filter @wiener-nebel/edge-api --filter @wiener-nebel/web run dev",
+    "dev:test:edge": "corepack pnpm --filter @wiener-nebel/edge-api dev",
+    "dev:test:web": "corepack pnpm --filter @wiener-nebel/web dev",
     "dev:web": "corepack pnpm --filter @wiener-nebel/web dev",
     "format": "corepack pnpm -r --if-present run format"
   },
