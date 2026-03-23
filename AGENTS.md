@@ -9,3 +9,4 @@
 - Alle Dependencies müssen vor Abschluss eines Tasks auf aktuellem Stand sein.
 - Alle Dependencies müssen vor Abschluss eines Tasks ohne bekannte Schwachstellen sein.
 - Alle Dependencies müssen auf GitHub durch Dependabot geprüft werden.
+- Nach einem PR darf keine offene Vulnerability mehr vorhanden sein.

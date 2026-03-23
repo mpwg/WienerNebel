@@ -13,6 +13,13 @@
     "dev:web": "corepack pnpm --filter @wiener-nebel/web dev",
     "format": "corepack pnpm -r --if-present run format"
   },
+  "pnpm": {
+    "overrides": {
+      "fast-xml-parser": "5.5.7",
+      "@rollup/plugin-terser": "1.0.0",
+      "serialize-javascript": "7.0.3"
+    }
+  },
   "devDependencies": {
     "turbo": "^2.0.0",
     "typescript": "^5.6.3"
