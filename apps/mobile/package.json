@@ -5,6 +5,7 @@
   "main": "expo/AppEntry",
   "scripts": {
     "android": "expo start --android",
+    "build": "tsc --noEmit -p tsconfig.json",
     "check": "tsc --noEmit -p tsconfig.json",
     "ios": "expo start --ios",
     "start": "expo start"
