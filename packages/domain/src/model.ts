@@ -19,6 +19,7 @@ export interface MatchConfig {
 }
 
 export interface PlannedMove {
+  playerId: string;
   type: "move";
   round: number;
   fromNodeId: NodeId;
@@ -87,6 +88,7 @@ export interface JoinLobbyInput {
 }
 
 export interface StartMatchInput {
+  requestedByPlayerId: string;
   mrXPlayerId: string;
   startPositions: Record<string, NodeId>;
 }
@@ -95,6 +97,16 @@ export interface SubmitMoveInput {
   playerId: string;
   toNodeId: NodeId;
   ticket: TicketType;
+}
+
+export interface MeetingInput {
+  playerId: string;
+  reason: string;
+}
+
+export interface VoteInput {
+  playerId: string;
+  suspectPlayerId: string;
 }
 
 const DEFAULT_TICKETS: Record<TicketType, number> = {
@@ -162,6 +174,12 @@ function requirePlanningStage(state: MatchState): void {
   }
 }
 
+function requireMeetingStage(state: MatchState): void {
+  if (state.stage !== "meeting") {
+    throw new Error("Abstimmungen sind nur während eines Meetings möglich.");
+  }
+}
+
 function requirePlayer(state: MatchState, playerId: string): PlayerState {
   const player = state.players.find((entry) => entry.id === playerId);
 
@@ -170,6 +188,46 @@ function requirePlayer(state: MatchState, playerId: string): PlayerState {
   }
 
   return player;
+}
+
+function requireHost(state: MatchState, playerId: string): void {
+  const player = requirePlayer(state, playerId);
+
+  if (!player.isHost) {
+    throw new Error("Nur der Host darf diese Aktion ausführen.");
+  }
+}
+
+function createRoundLogMessage(
+  state: MatchState,
+  player: PlayerState,
+  move: PlannedMove
+): string {
+  const revealMrXPosition = shouldRevealMrXPosition(state, move.round);
+
+  if (player.role === "mr_x") {
+    if (move.ticket === "black") {
+      return revealMrXPosition
+        ? `Mr. X hat ein Black Ticket verwendet und wurde bei ${move.toNodeId} gesichtet.`
+        : "Mr. X hat ein Black Ticket verwendet.";
+    }
+
+    return revealMrXPosition
+      ? `Mr. X nutzte ${move.ticket} und wurde bei ${move.toNodeId} gesichtet.`
+      : `Mr. X nutzte ${move.ticket}.`;
+  }
+
+  return `${player.name} bewegte sich mit ${move.ticket} nach ${move.toNodeId}.`;
+}
+
+function decrementTicket(
+  tickets: Record<TicketType, number>,
+  ticket: TicketType
+): Record<TicketType, number> {
+  return {
+    ...tickets,
+    [ticket]: tickets[ticket] - 1
+  };
 }
 
 export function createLobbyState(input: CreateLobbyInput): MatchState {
@@ -246,6 +304,7 @@ export function startMatch(
   input: StartMatchInput
 ): MatchState {
   requireLobbyStage(state);
+  requireHost(state, input.requestedByPlayerId);
 
   if (state.players.length < state.config.minPlayers) {
     throw new Error("Es sind noch nicht genug Spieler in der Lobby.");
@@ -316,6 +375,7 @@ export function submitPlayerMove(
             ...entry,
             ready: false,
             plannedMove: {
+              playerId: entry.id,
               type: "move",
               round: state.round,
               fromNodeId: entry.nodeId,
@@ -325,6 +385,148 @@ export function submitPlayerMove(
           }
         : entry
     )
+  });
+}
+
+export function resolvePlannedRound(state: MatchState): MatchState {
+  requirePlanningStage(state);
+
+  const activePlayers = listActivePlayers(state);
+
+  if (!activePlayers.every((player) => player.ready)) {
+    throw new Error("Noch nicht alle aktiven Spieler sind bereit.");
+  }
+
+  if (!activePlayers.every((player) => player.plannedMove !== null)) {
+    throw new Error("Noch nicht alle aktiven Spieler haben einen Zug abgegeben.");
+  }
+
+  const moves = activePlayers
+    .map((player) => player.plannedMove)
+    .filter((move): move is PlannedMove => move !== null);
+  const revealMrXPosition = shouldRevealMrXPosition(state, state.round);
+  const updatedPlayers = state.players.map((player) => {
+    if (player.eliminated || !player.plannedMove) {
+      return {
+        ...player,
+        ready: false
+      };
+    }
+
+    return {
+      ...player,
+      nodeId: player.plannedMove.toNodeId,
+      ready: false,
+      tickets: decrementTicket(player.tickets, player.plannedMove.ticket),
+      plannedMove: null
+    };
+  });
+  const mrX = updatedPlayers.find((player) => player.role === "mr_x");
+  const investigators = updatedPlayers.filter(
+    (player) => player.role === "investigator" && !player.eliminated
+  );
+  const investigatorsWin =
+    mrX !== undefined &&
+    investigators.some((player) => player.nodeId === mrX.nodeId);
+  const mrXWins = !investigatorsWin && state.round >= state.config.maxRounds;
+
+  return touchState({
+    ...state,
+    stage: investigatorsWin || mrXWins ? "finished" : "planning",
+    round: investigatorsWin || mrXWins ? state.round : state.round + 1,
+    players: updatedPlayers,
+    publicLog: [
+      ...state.publicLog,
+      ...moves.map((move) => ({
+        round: move.round,
+        message: createRoundLogMessage(
+          state,
+          activePlayers.find((entry) => entry.id === move.playerId) ??
+            requirePlayer(state, move.playerId),
+          move
+        )
+      })),
+      ...(revealMrXPosition && mrX
+        ? [
+            {
+              round: state.round,
+              message: `Reveal: Mr. X befindet sich bei ${mrX.nodeId}.`
+            }
+          ]
+        : []),
+      ...(investigatorsWin
+        ? [
+            {
+              round: state.round,
+              message: "Die Ermittler haben Mr. X gefasst."
+            }
+          ]
+        : []),
+      ...(mrXWins
+        ? [
+            {
+              round: state.round,
+              message: "Mr. X hat das Match überlebt und gewinnt."
+            }
+          ]
+        : [])
+    ],
+    roundHistory: [
+      ...state.roundHistory,
+      {
+        round: state.round,
+        moves,
+        revealMrXPosition
+      }
+    ],
+    winner: investigatorsWin ? "investigators" : mrXWins ? "mr_x" : null
+  });
+}
+
+export function startMeeting(state: MatchState, input: MeetingInput): MatchState {
+  const player = requirePlayer(state, input.playerId);
+
+  if (state.stage === "finished") {
+    throw new Error("Ein beendetes Match kann kein Meeting mehr starten.");
+  }
+
+  if (state.stage === "lobby") {
+    throw new Error("Vor Match-Start kann kein Meeting gestartet werden.");
+  }
+
+  return touchState({
+    ...state,
+    stage: "meeting",
+    publicLog: [
+      ...state.publicLog,
+      {
+        round: state.round,
+        message: `${player.name} hat ein Meeting gestartet: ${input.reason}`
+      }
+    ]
+  });
+}
+
+export function castVote(state: MatchState, input: VoteInput): MatchState {
+  requireMeetingStage(state);
+
+  const voter = requirePlayer(state, input.playerId);
+  const suspect = requirePlayer(state, input.suspectPlayerId);
+
+  return touchState({
+    ...state,
+    stage: state.winner ? "finished" : "planning",
+    publicLog: [
+      ...state.publicLog,
+      {
+        round: state.round,
+        message: `${voter.name} verdächtigt ${suspect.name}.`
+      },
+      {
+        round: state.round,
+        message: "Das Meeting wurde ohne Eliminierung beendet."
+      }
+    ]
   });
 }
 
