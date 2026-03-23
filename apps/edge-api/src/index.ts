@@ -80,12 +80,18 @@ export default {
         })
       );
 
-      const payload = createLobbyResponseSchema.parse(await response.json());
+      const payload = await response.json();
+
+      if (!response.ok) {
+        return json(payload, response.status);
+      }
+
+      const lobbyPayload = joinLobbyResponseSchema.parse(payload);
 
       return json(
         {
           matchId,
-          lobby: payload.lobby
+          lobby: lobbyPayload.lobby
         },
         201
       );
