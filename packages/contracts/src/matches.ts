@@ -5,6 +5,11 @@ import {
   ticketTypeSchema
 } from "./common";
 
+export const startMatchSchema = z.object({
+  playerId: z.string().min(1),
+  mrXPlayerId: z.string().min(1).optional()
+});
+
 export const moveChoiceSchema = z.object({
   fromNodeId: z.string().min(1),
   toNodeId: z.string().min(1),
@@ -46,6 +51,27 @@ export const playerMatchStateResponseSchema = z.object({
   match: playerMatchViewSchema
 });
 
+export const startMatchResponseSchema = z.object({
+  match: publicMatchViewSchema
+});
+
+export const submitMoveResponseSchema = z.object({
+  match: playerMatchViewSchema
+});
+
+export const readyResponseSchema = z.object({
+  match: playerMatchViewSchema
+});
+
+export const meetingResponseSchema = z.object({
+  match: publicMatchViewSchema
+});
+
+export const voteResponseSchema = z.object({
+  match: publicMatchViewSchema
+});
+
+export type StartMatchRequest = z.infer<typeof startMatchSchema>;
 export type MoveChoice = z.infer<typeof moveChoiceSchema>;
 export type SubmitMoveRequest = z.infer<typeof submitMoveSchema>;
 export type ReadyRequest = z.infer<typeof readySchema>;
@@ -55,3 +81,8 @@ export type GetMatchStateParams = z.infer<typeof getMatchStateParamsSchema>;
 export type GetPlayerMatchStateQuery = z.infer<typeof getPlayerMatchStateQuerySchema>;
 export type PublicMatchStateResponse = z.infer<typeof publicMatchStateResponseSchema>;
 export type PlayerMatchStateResponse = z.infer<typeof playerMatchStateResponseSchema>;
+export type StartMatchResponse = z.infer<typeof startMatchResponseSchema>;
+export type SubmitMoveResponse = z.infer<typeof submitMoveResponseSchema>;
+export type ReadyResponse = z.infer<typeof readyResponseSchema>;
+export type MeetingResponse = z.infer<typeof meetingResponseSchema>;
+export type VoteResponse = z.infer<typeof voteResponseSchema>;

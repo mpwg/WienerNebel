@@ -5,10 +5,25 @@ import {
   getPlayerMatchStateQuerySchema,
   joinLobbyResponseSchema,
   joinLobbySchema,
-  publicMatchStateResponseSchema,
+  meetingResponseSchema,
   playerMatchStateResponseSchema,
+  publicMatchStateResponseSchema,
+  readyResponseSchema,
+  startMatchResponseSchema,
+  startMatchSchema,
+  submitMoveResponseSchema,
+  submitMoveSchema,
+  voteResponseSchema,
+  voteSchema,
+  readySchema,
+  meetingSchema,
   type CreateLobbyRequest,
-  type JoinLobbyRequest
+  type JoinLobbyRequest,
+  type MeetingRequest,
+  type ReadyRequest,
+  type StartMatchRequest,
+  type SubmitMoveRequest,
+  type VoteRequest
 } from "@wiener-nebel/contracts";
 import { GameRoom } from "./durable-objects/game-room";
 
@@ -89,6 +104,130 @@ export default {
       }
 
       return json(joinLobbyResponseSchema.parse(payload));
+    }
+
+    if (request.method === "POST" && url.pathname.endsWith("/start")) {
+      const matchId = url.pathname.split("/")[2];
+      getMatchStateParamsSchema.parse({ matchId });
+      const body = startMatchSchema.parse(
+        (await request.json()) as StartMatchRequest
+      );
+      const objectId = env.GAME_ROOM.idFromName(matchId);
+      const stub = env.GAME_ROOM.get(objectId);
+      const response = await stub.fetch(
+        new Request("https://game-room.internal/match/start", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json"
+          },
+          body: JSON.stringify(body)
+        })
+      );
+      const payload = await response.json();
+
+      if (!response.ok) {
+        return json(payload, response.status);
+      }
+
+      return json(startMatchResponseSchema.parse(payload));
+    }
+
+    if (request.method === "POST" && url.pathname.endsWith("/move")) {
+      const matchId = url.pathname.split("/")[2];
+      getMatchStateParamsSchema.parse({ matchId });
+      const body = submitMoveSchema.parse(
+        (await request.json()) as SubmitMoveRequest
+      );
+      const objectId = env.GAME_ROOM.idFromName(matchId);
+      const stub = env.GAME_ROOM.get(objectId);
+      const response = await stub.fetch(
+        new Request("https://game-room.internal/match/move", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json"
+          },
+          body: JSON.stringify(body)
+        })
+      );
+      const payload = await response.json();
+
+      if (!response.ok) {
+        return json(payload, response.status);
+      }
+
+      return json(submitMoveResponseSchema.parse(payload));
+    }
+
+    if (request.method === "POST" && url.pathname.endsWith("/ready")) {
+      const matchId = url.pathname.split("/")[2];
+      getMatchStateParamsSchema.parse({ matchId });
+      const body = readySchema.parse((await request.json()) as ReadyRequest);
+      const objectId = env.GAME_ROOM.idFromName(matchId);
+      const stub = env.GAME_ROOM.get(objectId);
+      const response = await stub.fetch(
+        new Request("https://game-room.internal/match/ready", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json"
+          },
+          body: JSON.stringify(body)
+        })
+      );
+      const payload = await response.json();
+
+      if (!response.ok) {
+        return json(payload, response.status);
+      }
+
+      return json(readyResponseSchema.parse(payload));
+    }
+
+    if (request.method === "POST" && url.pathname.endsWith("/meeting")) {
+      const matchId = url.pathname.split("/")[2];
+      getMatchStateParamsSchema.parse({ matchId });
+      const body = meetingSchema.parse((await request.json()) as MeetingRequest);
+      const objectId = env.GAME_ROOM.idFromName(matchId);
+      const stub = env.GAME_ROOM.get(objectId);
+      const response = await stub.fetch(
+        new Request("https://game-room.internal/match/meeting", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json"
+          },
+          body: JSON.stringify(body)
+        })
+      );
+      const payload = await response.json();
+
+      if (!response.ok) {
+        return json(payload, response.status);
+      }
+
+      return json(meetingResponseSchema.parse(payload));
+    }
+
+    if (request.method === "POST" && url.pathname.endsWith("/vote")) {
+      const matchId = url.pathname.split("/")[2];
+      getMatchStateParamsSchema.parse({ matchId });
+      const body = voteSchema.parse((await request.json()) as VoteRequest);
+      const objectId = env.GAME_ROOM.idFromName(matchId);
+      const stub = env.GAME_ROOM.get(objectId);
+      const response = await stub.fetch(
+        new Request("https://game-room.internal/match/vote", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json"
+          },
+          body: JSON.stringify(body)
+        })
+      );
+      const payload = await response.json();
+
+      if (!response.ok) {
+        return json(payload, response.status);
+      }
+
+      return json(voteResponseSchema.parse(payload));
     }
 
     if (

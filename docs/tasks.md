@@ -23,9 +23,9 @@ Stand: 23.03.2026
 ### Aktuell offen
 
 - Die meisten fachlichen Arbeitspakete ab Phase 2 sind noch nicht umgesetzt.
-- `packages/domain` hat jetzt ein erstes Match-State-Modell, View-Projektionen und eine Rule-Engine-Grundstruktur, benötigt aber noch echte Spielregeln und Rundenauflösung.
-- `packages/contracts` enthält jetzt erste Request-/Response-Schemas für Lobby-Erstellung, Lobby-Join und Match-State, muss aber für Start, Moves, Meetings und Voting weiter ausgebaut werden.
-- Die `edge-api` validiert erste Lobby- und Match-State-Flows bereits über `packages/contracts`, die eigentliche Spiellogik-Endpunktfläche ist aber noch weitgehend offen.
+- `packages/domain` deckt jetzt Lobby, Match-Start, Move-Planung, Ready/Resolution sowie einfache Meeting- und Voting-Übergänge ab, benötigt aber noch tiefere Spielregeln und Legality Checks.
+- `packages/contracts` enthält jetzt Request-/Response-Schemas für Lobby-Erstellung, Lobby-Join, Match-State sowie die ersten Match-Aktionen.
+- Die `edge-api` validiert und bedient jetzt die ersten Lobby- und Match-Aktionsflüsse über `packages/contracts`, es fehlen aber noch robustere Regeln, Fehlerfälle und Persistenz jenseits des MVP-Grundpfads.
 - Die Clients sind bisher nur als technisches Grundgerüst vorhanden, noch nicht als Spieloberflächen.
 
 ## Phase 1 – Monorepo und Basis
@@ -46,7 +46,7 @@ Stand: 23.03.2026
 ### Contracts
 
 - [x] Zod-Schemas für Requests und Responses definieren
-- [ ] DTOs für Lobby, Match und Voting strukturieren
+- [x] DTOs für Lobby, Match und Voting strukturieren
 - [x] Validierung an den API-Grenzen festlegen
 
 ### Map Data
@@ -75,8 +75,8 @@ Stand: 23.03.2026
 
 ### Durable Object
 
-- [ ] `GameRoom`-Klasse für Lobby und Match-State anlegen
-- [ ] atomare Rundenauflösung im Durable Object vorsehen
+- [x] `GameRoom`-Klasse für Lobby und Match-State anlegen
+- [x] atomare Rundenauflösung im Durable Object vorsehen
 - [ ] Snapshots für spätere Persistenz und Reconnect vorbereiten
 
 ### D1
@@ -88,14 +88,14 @@ Stand: 23.03.2026
 ### Endpunkte
 
 - [ ] `POST /guest/login`
-- [ ] `POST /lobbies`
-- [ ] `POST /lobbies/join`
-- [ ] `POST /lobbies/start`
-- [ ] `GET /matches/:id/state`
-- [ ] `POST /matches/:id/move`
-- [ ] `POST /matches/:id/ready`
-- [ ] `POST /matches/:id/meeting`
-- [ ] `POST /matches/:id/vote`
+- [x] `POST /lobbies`
+- [x] `POST /lobbies/join`
+- [x] `POST /lobbies/start`
+- [x] `GET /matches/:id/state`
+- [x] `POST /matches/:id/move`
+- [x] `POST /matches/:id/ready`
+- [x] `POST /matches/:id/meeting`
+- [x] `POST /matches/:id/vote`
 
 ## Phase 4 – Clients
 
@@ -121,11 +121,11 @@ Stand: 23.03.2026
 
 - [ ] Move Validation
 - [ ] Ticket Handling
-- [ ] Round Resolution
+- [x] Round Resolution
 - [ ] Reveal System
 - [ ] Win Conditions
-- [ ] Meeting Trigger
-- [ ] Vote Handling
+- [x] Meeting Trigger
+- [x] Vote Handling
 - [ ] Result Evaluation
 
 ## Phase 6 – Synchronisation und Stabilität
