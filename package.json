@@ -1,0 +1,20 @@
+{
+  "name": "wiener-nebel",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.0.0",
+  "scripts": {
+    "build": "corepack pnpm -r --if-present run build",
+    "build:turbo": "turbo run build",
+    "check": "corepack pnpm -r run check",
+    "check:turbo": "turbo run check",
+    "dev:edge": "corepack pnpm --filter @wiener-nebel/edge-api dev",
+    "dev:mobile": "corepack pnpm --filter @wiener-nebel/mobile start",
+    "dev:web": "corepack pnpm --filter @wiener-nebel/web dev",
+    "format": "corepack pnpm -r --if-present run format"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "typescript": "^5.6.3"
+  }
+}

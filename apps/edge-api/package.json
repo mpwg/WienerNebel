@@ -1,0 +1,21 @@
+{
+  "name": "@wiener-nebel/edge-api",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit -p tsconfig.json",
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev"
+  },
+  "dependencies": {
+    "@wiener-nebel/contracts": "workspace:*",
+    "@wiener-nebel/domain": "workspace:*",
+    "@wiener-nebel/map-data": "workspace:*"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240821.0",
+    "typescript": "^5.6.3",
+    "wrangler": "^3.78.0"
+  }
+}

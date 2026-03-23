@@ -2,97 +2,135 @@
 
 ## Ziel
 
-Diese Datei beschreibt konkrete Arbeitspakete für Codex, um das MVP umzusetzen.
+Diese Datei beschreibt die nächsten Arbeitspakete für das MVP auf Basis der neuen Zielarchitektur mit Web/PWA, Mobile, Edge-API und gemeinsamen Kernpaketen.
 
----
+## Phase 1 – Monorepo und Basis
 
-## Phase 1 – Setup
-
-- Monorepo Struktur erstellen
 - pnpm Workspace einrichten
-- turbo.json konfigurieren
-- TypeScript Setup für alle Packages
+- `turbo.json` konfigurieren
+- TypeScript-Basis für alle Apps und Pakete anlegen
+- gemeinsame Namenskonventionen für Apps, Pakete und Imports festlegen
 
----
+## Phase 2 – Kernpakete
 
-## Phase 2 – Shared Package
+### Domain
 
-- Types definieren (Player, Match, Move, Events)
-- Zod Schemas erstellen
-- Rule Engine Grundstruktur
+- Match-State modellieren
+- View-Projektionen für `public`, `player` und `internal` anlegen
+- Rule-Engine-Grundstruktur erstellen
 
----
+### Contracts
 
-## Phase 3 – Backend
+- Zod-Schemas für Requests und Responses definieren
+- DTOs für Lobby, Match und Voting strukturieren
+- Validierung an den API-Grenzen festlegen
+
+### Map Data
+
+- `vienna_core` als versionierte Startkarte ablegen
+- Graphmodell für Nodes und Edges definieren
+- Karten-Registry aufbauen
+
+### UI Tokens
+
+- Farben, Typografie, Spacing und Motion definieren
+- Tokens für Web und Mobile nutzbar machen
+
+### Map Tools
+
+- Prüfwerkzeuge für Graphdaten anlegen
+- spätere Generatoren und Importer vorbereiten
+
+## Phase 3 – Edge-Backend
 
 ### Worker
-- Routing
-- JSON API
+
+- Routing für HTTP-API anlegen
+- Health-Endpoint und API-Versionierung vorsehen
+- Requests über `packages/contracts` validieren
 
 ### Durable Object
-- GameRoom Klasse
-- Match State
-- Rollenzuweisung
 
-### Endpoints
-- POST /guest/login
-- POST /lobbies
-- POST /lobbies/join
-- POST /lobbies/start
-- GET /matches/state
-- POST /matches/move
-- POST /matches/ready
+- `GameRoom`-Klasse für Lobby und Match-State anlegen
+- atomare Rundenauflösung im Durable Object vorsehen
+- Snapshots für spätere Persistenz und Reconnect vorbereiten
 
----
+### D1
 
-## Phase 4 – Game Logic
+- Lobby-Index
+- Match-Metadaten
+- spätere Match-Summaries oder Replays
+
+### Endpunkte
+
+- `POST /guest/login`
+- `POST /lobbies`
+- `POST /lobbies/join`
+- `POST /lobbies/start`
+- `GET /matches/:id/state`
+- `POST /matches/:id/move`
+- `POST /matches/:id/ready`
+- `POST /matches/:id/meeting`
+- `POST /matches/:id/vote`
+
+## Phase 4 – Clients
+
+### Web/PWA
+
+- App-Shell und Installierbarkeit
+- Home Screen
+- Lobby Screen
+- Match Screen
+- Voting Screen
+- Offline-freundliche Assets und Reconnect-Verhalten
+
+### Mobile
+
+- Expo-App mit demselben Informationsmodell
+- Basisnavigation
+- Home Screen
+- Lobby Screen
+- Match Screen
+- Voting Screen
+
+## Phase 5 – Spiellogik
 
 - Move Validation
 - Ticket Handling
 - Round Resolution
 - Reveal System
 - Win Conditions
-
----
-
-## Phase 5 – Voting
-
 - Meeting Trigger
 - Vote Handling
 - Result Evaluation
 
----
+## Phase 6 – Synchronisation und Stabilität
 
-## Phase 6 – Mobile App
-
-- Navigation Setup
-- Home Screen
-- Lobby Screen
-- Match Screen
-- Move Picker
-- Voting Screen
-
----
+- Polling oder SSE für Live-Updates im MVP festlegen
+- Reconnect sauber behandeln
+- idempotente Client-Aktionen sicherstellen
+- Fehlerszenarien und Timeouts definieren
 
 ## Phase 7 – Testing
 
-- Unit Tests für Rule Engine
-- Integration Tests für Match Flow
-
----
+- Unit Tests für Domain und View-Projektionen
+- Contract-Tests für API-Schemas
+- Integrationstests für Match-Flow
+- Smoke-Test für Web/PWA und Edge-API
 
 ## Phase 8 – Polish
 
-- Error Handling
-- Reconnect
-- Performance Optimierung
-
----
+- visuelle Qualität der Clients erhöhen
+- Performance auf schwächeren Geräten prüfen
+- Logs, Monitoring und Fehlerrückgaben verbessern
+- Deployment-Checkliste für Cloudflare Pages und Workers erstellen
 
 ## Definition of Done
 
-- Spiel ist spielbar mit 3–5 Spielern
-- Hidden Role funktioniert
+- Spiel ist mit 3 bis 6 Spielern spielbar
+- Hidden Role funktioniert ohne Informationsleck
 - Moves werden korrekt validiert
 - Voting funktioniert
 - Siegbedingungen greifen korrekt
+- Web/PWA ist intern leicht testbar und installierbar
+- Mobile App nutzt dieselbe Domäne und dieselben Contracts
