@@ -2,10 +2,10 @@
   "name": "@wiener-nebel/mobile",
   "private": true,
   "version": "0.1.0",
-  "main": "./App.tsx",
+  "main": "expo/AppEntry",
   "scripts": {
     "android": "expo start --android",
-    "build": "expo export --platform android --output-dir dist/android && expo export --platform ios --output-dir dist/ios",
+    "build": "tsc --noEmit -p tsconfig.json",
     "check": "tsc --noEmit -p tsconfig.json",
     "ios": "expo start --ios",
     "start": "expo start"
