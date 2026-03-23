@@ -71,17 +71,57 @@ Der MVP soll zuerst auf schnelles Testen und einfache Auslieferung optimiert wer
 ## Schnellstart
 
 ```bash
-pnpm install
-pnpm dev:web
-pnpm dev:edge
-pnpm dev:mobile
+corepack pnpm install
+corepack pnpm dev:web
+corepack pnpm dev:edge
+corepack pnpm dev:mobile
 ```
+
+## Lokale Testumgebungen
+
+### Web und Edge-API gemeinsam starten
+
+```bash
+corepack pnpm install
+corepack pnpm dev:test
+```
+
+Danach:
+
+- Web-App: [http://localhost:5173](http://localhost:5173)
+- Edge-API: [http://127.0.0.1:8787](http://127.0.0.1:8787)
+
+### Nur Web-Testoberfläche starten
+
+```bash
+corepack pnpm dev:test:web
+```
+
+### Nur lokale Edge-API starten
+
+```bash
+corepack pnpm dev:test:edge
+```
+
+### Browser-Testpfad
+
+Die Web-App enthält jetzt eine lokale Testoberfläche für:
+
+- Lobby erstellen
+- Lobby beitreten
+- Match starten
+- Match-State laden
+- Move, Ready, Meeting und Vote
+
+Für einen vollständigen lokalen Browser-Test zuerst die Edge-API und dann die Web-App starten oder direkt `corepack pnpm dev:test` verwenden.
 
 ## Weiterführende Dokumente
 
 - [Konzept](docs/concept.md)
 - [Architektur](docs/architecture.md)
 - [Tasks](docs/tasks.md)
+- [Web-Testumgebung](apps/web/README.md)
+- [Edge-API-Testumgebung](apps/edge-api/README.md)
 
 ## Status
 
