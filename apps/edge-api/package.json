@@ -15,7 +15,7 @@
     "@wiener-nebel/map-data": "workspace:*"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240821.0",
+    "@cloudflare/workers-types": "^4.20260426.1",
     "typescript": "^5.6.3",
     "wrangler": "^4.76.0"
   }
